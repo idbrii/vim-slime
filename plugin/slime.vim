@@ -18,8 +18,9 @@ end
 
 function! s:ScreenSend(config, text)
   call s:WritePasteFile(a:text)
-  call system("screen -S " . shellescape(a:config["sessionname"]) . " -p " . shellescape(a:config["windowname"]) . " -X readreg p " . g:slime_paste_file)
-  call system("screen -S " . shellescape(a:config["sessionname"]) . " -p " . shellescape(a:config["windowname"]) . " -X paste p")
+  let screen_prefix = "screen -S " . shellescape(a:config["sessionname"]) . " -p " . shellescape(a:config["windowname"])
+  let screen_cmd = ' -X eval "msgwait 0" "readreg p '.g:slime_paste_file.'" "paste p" "msgwait 5"'
+  call system(screen_prefix . screen_cmd)
 endfunction
 
 function! s:ScreenSessionNames(A,L,P)
@@ -222,3 +223,4 @@ if !exists("g:slime_no_mappings") || !g:slime_no_mappings
   endif
 endif
 
+" vim: sw=2 ts=2 et
